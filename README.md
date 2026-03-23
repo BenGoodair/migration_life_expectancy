@@ -5,22 +5,18 @@ Welcome to a repository for the data and code created for our project measuring 
 
 ## What is made available?
 The basic files available to use are:
- - Code to produce a synthetic dataset and run our analyses as per the paper.
- - Outputs of the synthetic data for replication comparisons
- - Upon approval of the ONS, the actual code used on the inaccessible data will be available too
+ - One code file to a) produce a synthetic dataset, b) run our analyses for life expectancy calculation as in the paper and c) save output data.
+ - Another code file to take the synthetic output data and produce figures as per the paper.
+ - Outputs of the synthetic analyses for replication comparisons.
+ - Upon approval of the ONS, the actual (exactly alike) code used on the inaccessible data will be available too.
 
 
 ## How to use the code?
-The code is provided as a plain R script and also in individual functions.
+The code is provided as two plain R script.
 
-To simply run the functions you can, for example, run the following two lines of code to re-produce our main figure:
+To simply produce the synthetic life tables, run the "create_life_tables.R" file.
 
-
-    ` 
-        source("https://raw.githubusercontent.com/BenGoodair/CSC_Outsourcing_Placement_Outcomes/main/Code/Placements_figure_1.R")
-        Create_figure_4()
-    `
-
+To produce the synthetic figures, run the "create_tables_figures.R" file.
 
 
 ## What to be aware of?
