@@ -1,6 +1,6 @@
 # migration_life_expectancy
 
-Welcome to a repository for the data and code created for our project measuring the healthy-migrant effect in the UK, led by [Dr Lucinda Hiam]('https://scholar.google.com/citations?user=i1-kL54AAAAJ&hl=en')
+Welcome to a repository for the data and code created for our project measuring the healthy-migrant effect in the UK, led by [Dr Lucinda Hiam](https://scholar.google.com/citations?user=i1-kL54AAAAJ&hl=en)
 
 
 ## What is made available?
