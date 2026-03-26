@@ -1,31 +1,39 @@
 setTimeLimit(elapsed = Inf)
 
+n_bootstrap = 150
+
 options(timeout = 600)  # Increase timeout (default is 60s)
 Sys.setenv(R_DEFAULT_TIMEOUT = 600)  #
 
-# Create the data frame
 set.seed(42)
-n_bootstrap = 100
+n <- 5000000
 
 df <- data.frame(
-  sex = sample(c("Female", "Male"), 5000000, replace = TRUE),
-  dobyr = sample(1900:2017, 5000000, replace = TRUE),
-  cob_3cats = sample(1:3, 5000000, replace = TRUE)
+  sex     = sample(c("Female", "Male"), n, replace = TRUE),
+  dobyr   = sample(1900:2017, n, replace = TRUE),
+  cob_3cats = sample(1:3, n, replace = TRUE,
+                     prob = c(0.80, 0.10, 0.10))  # realistic proportions
 )
 
-
-# Calculate 'deyrbde' and remove unrealistic data
 df <- df %>%
   mutate(
-    # Different life expectancy for women (e.g., mean + 5 years)
-    deyrbde = ifelse(
-      sex == "Female",
-      pmin(2017, round(rnorm(n(), mean = dobyr + 75, sd = 10))),  # Females live longer
-      pmin(2017, round(rnorm(n(), mean = dobyr + 70, sd = 10)))   # Males standard life expectancy
+    # Base life expectancy by sex
+    base_le = ifelse(sex == "Female", 75, 70),
+    
+    # Healthy migrant effect: Outside UK (3) lives ~5 yrs longer,
+    # rUK (2) similar to E&W (1)
+    cob_bonus = case_when(
+      cob_3cats == 3 ~ 5,   # Outside UK — healthy migrant advantage
+      cob_3cats == 2 ~ 1,   # Rest of UK — marginal difference
+      TRUE           ~ 0    # England & Wales — baseline
     ),
-    died = ifelse(is.na(deyrbde) | deyrbde > 2017, NA, 1)
+    
+    deyrbde = pmin(2017, round(rnorm(n(), mean = dobyr + base_le + cob_bonus, sd = 10))),
+    died    = ifelse(is.na(deyrbde) | deyrbde > 2017, NA, 1)
   ) %>%
-  filter(is.na(died) | deyrbde >= dobyr)  # Remove unrealistic data
+  filter(is.na(died) | deyrbde >= dobyr) %>%
+  dplyr::select(-base_le, -cob_bonus)  # tidy up helper cols
+
 
 # You'll need evyreem and evyrbir columns too - adding placeholders if not present
 # (remove these if you already generate them elsewhere)
@@ -921,3 +929,5 @@ all_confidence_intervals <- rbind(confidence_intervals %>%
 
 gc()
 
+write.csv(all_confidence_intervals, "~/Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/migration_life_expectancy/Data/ci_life_tables.csv")
+write.csv(all_life_tables, "~/Library/CloudStorage/OneDrive-Nexus365/Documents/GitHub/GitHub_new/migration_life_expectancy/Data/no_ci_life_tables.csv")
